@@ -48,7 +48,7 @@
                                     <div class="text-center">
                                         <h1 class="h4 text-gray-900 mb-4">SmartLink Login</h1>
                                     </div>
-                                    <form class="user">
+                                    <form class="user" id="loginForm">
                                         <div class="form-group">
                                             <input type="email" class="form-control form-control-user" id="exampleInputEmail"
                                                 aria-describedby="emailHelp" placeholder="Masukkan Email..." required>
@@ -106,6 +106,9 @@
     <!-- Custom scripts for all pages-->
     <script src="js/sb-admin-2.min.js"></script>
 
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <!-- firebase setup -->
     <script type="module">
         // Import Firebase SDK
@@ -138,7 +141,6 @@
                 const result = await signInWithPopup(auth, provider);
                 const user = result.user;
                 const uid = user.uid;
-
                 // Simpan data user ke Firestore
                 const userRef = doc(db, "users", uid);
                 await setDoc(userRef, {
@@ -147,15 +149,31 @@
                     email: user.email,
                     photoURL: user.photoURL,
                     createdAt: new Date().toISOString()
-                }, { merge: true }); // Gunakan merge agar tidak menimpa data lama
-
+                }, { merge: true });
                 console.log("Login berhasil dan data user tersimpan!");
                 localStorage.setItem("user", JSON.stringify(user));
-                window.location.href = "index.html";
+                // SweetAlert sebelum redirect ke index.html
+                Swal.fire({
+                    title: "Login Berhasil!",
+                    text: "Anda akan dialihkan ke halaman utama.",
+                    icon: "success",
+                    timer: 2000, // 2 detik sebelum pindah halaman
+                    showConfirmButton: false
+                }).then(() => {
+                    window.location.href = "index.html";
+                });
             } catch (error) {
                 console.error("Error saat login:", error.message);
+                // SweetAlert untuk error
+                Swal.fire({
+                    title: "Login Gagal!",
+                    text: error.message,
+                    icon: "error",
+                    confirmButtonText: "Coba Lagi"
+                });
             }
         });
+
 
 
 
@@ -213,6 +231,27 @@
 
                         document.getElementById("loginForm").submit(); // Kirim form jika valid
                     });
+
+                    // Cek apakah ada password yang tersimpan
+                if (localStorage.getItem("rememberedPassword")) {
+                    document.getElementById("password").value = localStorage.getItem("rememberedPassword");
+                    document.getElementById("customCheck").checked = true;
+                }
+
+                document.getElementById("loginForm").addEventListener("submit", function (event) {
+                    event.preventDefault(); // Mencegah form submit agar bisa diuji
+
+                    let password = document.getElementById("password").value;
+                    let rememberMe = document.getElementById("customCheck").checked;
+
+                    if (rememberMe) {
+                        localStorage.setItem("rememberedPassword", password); // Simpan password
+                    } else {
+                        localStorage.removeItem("rememberedPassword"); // Hapus password jika checkbox tidak dicentang
+                    }
+
+                    alert("Login Berhasil!");
+                });
                 });
     </script>
 
