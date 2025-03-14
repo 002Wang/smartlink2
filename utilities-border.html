@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scan QR Code WiFi</title>
+    <script src="https://unpkg.com/@zxing/library@latest"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+
+        video {
+            width: 100%;
+            max-width: 400px;
+            margin: 10px 0;
+            border: 2px solid black;
+        }
+
+        #qrcode {
+            margin: 20px auto;
+        }
+
+        p {
+            font-size: 18px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h2>Scan QR Code WiFi</h2>
+    <video id="video" autoplay></video>
+    <p id="result">Arahkan kamera ke QR Code WiFi</p>
+
+    <script>
+        async function startScanner() {
+            const codeReader = new ZXing.BrowserQRCodeReader();
+
+            try {
+                // Mendapatkan daftar kamera
+                const videoInputDevices = await codeReader.getVideoInputDevices();
+                if (videoInputDevices.length > 0) {
+                    const selectedDeviceId = videoInputDevices[0].deviceId;
+
+                    codeReader.decodeFromVideoDevice(selectedDeviceId, 'video', (result, err) => {
+                        if (result) {
+                            document.getElementById('result').textContent = "QR Code WiFi Ditemukan!";
+                            processQRCode(result.text);
+                        }
+                    });
+                } else {
+                    alert("Tidak ada kamera yang terdeteksi!");
+                }
+            } catch (error) {
+                console.error("Gagal memulai scanner:", error);
+            }
+        }
+
+        function processQRCode(qrText) {
+            if (qrText.startsWith("WIFI:")) {
+                const wifiData = qrText.match(/WIFI:S:(.*?);T:(.*?);P:(.*?);H:(.*?);/);
+                if (wifiData) {
+                    const ssid = wifiData[1];
+                    const security = wifiData[2]; // WPA atau WEP
+                    const password = wifiData[3];
+
+                    document.getElementById('result').textContent = `SSID: ${ssid} | Password: ${password}`;
+
+                    // **Mencoba menyambungkan ke WiFi**
+                    connectToWiFi(ssid, security, password);
+                }
+            } else {
+                alert("QR Code yang dipindai bukan QR WiFi!");
+            }
+        }
+
+        function connectToWiFi(ssid, security, password) {
+            try {
+                if (/Android/i.test(navigator.userAgent)) {
+                    // **Android: Buka pengaturan WiFi dengan intent**
+                    window.location.href = `intent://com.android.settings.wifi.ADD_NETWORK?ssid=${ssid}&password=${password}&type=${security}#Intent;scheme=android;end;`;
+                } else if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+                    // **iOS: Buka pengaturan WiFi (tidak bisa otomatis)**
+                    alert("Silakan hubungkan ke WiFi secara manual melalui Pengaturan.");
+                    window.location.href = "App-Prefs:root=WIFI";
+                } else {
+                    // **Browser lain: Tampilkan informasi WiFi**
+                    alert(`Silakan hubungkan ke WiFi secara manual:\nSSID: ${ssid}\nPassword: ${password}`);
+                }
+            } catch (error) {
+                console.error("Gagal menyambungkan ke WiFi:", error);
+            }
+        }
+
+        // **Jalankan Scanner saat halaman dimuat**
+        startScanner();
+    </script>
+
+</body>
+
+</html>
