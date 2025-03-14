@@ -94,6 +94,7 @@
                 <a class="nav-link" href="index.html">
                     <i class="fas fa-fw fa-tachometer-alt"></i>
                     <span>Beranda</span></a>
+                    
             </li>
 
             <!-- Divider -->
@@ -334,6 +335,9 @@
                     <!-- Page Heading -->
                     <div class="d-sm-flex align-items-center justify-content-between mb-4">
                         <h1 class="h3 mb-0 text-gray-800">Beranda</h1>
+                        <img src="https://api.qrserver.com/v1/create-qr-code/?data=WIFI:S:ESP32-Setup;T:WPA;P:12345678;H:false;&size=200x200"
+                            alt="QR WiFi ESP32">
+
                         <!-- Example single danger button -->
                         <div class="btn-group">
                             <button type="button" class="btn btn-info dropdown-toggle" data-bs-toggle="dropdown"
@@ -371,6 +375,32 @@
                                 </div>
                             </div>
                         </div>
+
+                        <!-- Modal Input WiFi -->
+                        <div class="modal fade" id="wifiModal" tabindex="-1" aria-labelledby="wifiModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="wifiModalLabel">Masukkan Detail WiFi</h5>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="mb-3">
+                                            <label for="ssid" class="form-label">WiFi SSID</label>
+                                            <input type="text" id="ssid" class="form-control" placeholder="Masukkan SSID">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="password" class="form-label">WiFi Password</label>
+                                            <input type="password" id="password" class="form-control" placeholder="Masukkan Password">
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                        <button type="button" class="btn btn-primary" id="sendWifi">Kirim</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
 
                         <!-- Modal OTP -->
                         <div id="otpModal" class="modal fade" tabindex="-1" aria-hidden="true" data-bs-backdrop="static"
@@ -643,104 +673,93 @@
         }
 
         async function startCamera() {
-            await stopCamera(); // Hentikan kamera sebelum memulai ulang
-            resultText.textContent = "Mencari barcode...";
+                await stopCamera(); // Pastikan kamera tidak double instance
+                resultText.textContent = "Mencari barcode...";
 
-            try {
-                const constraints = {
-                    video: { deviceId: cameraSelect.value ? { exact: cameraSelect.value } : undefined }
-                };
+                try {
+                    const constraints = {
+                        video: { deviceId: cameraSelect.value ? { exact: cameraSelect.value } : undefined }
+                    };
 
-                stream = await navigator.mediaDevices.getUserMedia(constraints);
-                videoElement.srcObject = stream;
+                    stream = await navigator.mediaDevices.getUserMedia(constraints);
+                    videoElement.srcObject = stream;
 
-                scanner.decodeFromVideoDevice(cameraSelect.value, videoElement, async (result, err) => {
-                    if (result) {
-                        resultText.textContent = "Hasil: " + result.text;
-                        await stopCamera();
+                    scanner.decodeFromVideoDevice(cameraSelect.value, videoElement, async (result, err) => {
+                        if (result) {
+                            resultText.textContent = "Hasil: " + result.text;
+                            await stopCamera();
 
-                        const scannedBarcode = result.text.trim(); // Hasil scan
+                            const scannedBarcode = result.text.trim(); // Hasil scan
 
-                        try {
-                            // **Ambil semua perangkat dari koleksi produk_key**
-                            const perangkatRef = collection(db, "produk_key");
-                            const perangkatSnap = await getDocs(perangkatRef);
+                            try {
+                                // **Ambil semua perangkat dari koleksi produk_key**
+                                const perangkatRef = collection(db, "produk_key");
+                                const perangkatSnap = await getDocs(perangkatRef);
 
-                            let barcodeTerdaftar = false;
+                                let barcodeTerdaftar = false;
 
-                            perangkatSnap.forEach((doc) => {
-                                const data = doc.data();
-
-                                // **Cek apakah barcode yang discan ada sebagai field dalam dokumen**
-                                if (scannedBarcode in data) {
-                                    barcodeTerdaftar = true;
-                                }
-                            });
-
-                            if (barcodeTerdaftar) {
-                                console.log("Perangkat terdaftar:", scannedBarcode);
-
-                                // Simpan produk_key ke localStorage sebelum OTP dikirim
-                                localStorage.setItem("produk_key", scannedBarcode);
-
-                                // **Ambil email user dari Firestore**
-                                const user = auth.currentUser;
-                                if (user) {
-                                    const userRef = doc(db, "users", user.uid);
-                                    const userSnap = await getDoc(userRef);
-
-                                    if (userSnap.exists()) {
-                                        const userData = userSnap.data();
-                                        const userEmail = userData.email;
-
-                                        if (userEmail) {
-                                            sendOTPEmail(userEmail); // Kirim OTP ke email user
-
-                                            // **Tutup modal scanner sebelum buka modal OTP**
-                                            var scannerModal = bootstrap.Modal.getInstance(document.getElementById("staticBackdrop"));
-                                            if (scannerModal) {
-                                                scannerModal.hide();
-                                            }
-
-                                            // **Tampilkan loading spinner sementara modal scanner tertutup dan modal OTP dibuka**
-                                            var loading = document.getElementById("loading");
-                                            loading.classList.remove("d-none"); // Menampilkan loading
-
-                                            // **Gunakan event listener untuk menunggu modal scanner tertutup sebelum membuka modal OTP**
-                                            scannerModal._element.addEventListener('hidden.bs.modal', function () {
-                                                // Setelah modal scanner tertutup, buka modal OTP
-                                                var otpModal = new bootstrap.Modal(document.getElementById("otpModal"));
-                                                otpModal.show();
-
-                                                // Sembunyikan loading spinner setelah modal OTP ditampilkan
-                                                loading.classList.add("d-none");
-                                            });
-                                        } else {
-                                            console.warn("Email tidak ditemukan di Firestore.");
-                                        }
-
-                                    } else {
-                                        console.warn("Data user tidak ditemukan di Firestore.");
+                                perangkatSnap.forEach((doc) => {
+                                    const data = doc.data();
+                                    if (scannedBarcode in data) {
+                                        barcodeTerdaftar = true;
                                     }
+                                });
+
+                                if (barcodeTerdaftar) {
+                                    console.log("Perangkat terdaftar:", scannedBarcode);
+
+                                    // **Simpan produk_key ke localStorage**
+                                    localStorage.setItem("produk_key", scannedBarcode);
+
+                                    // **Konfigurasi SSID & Password WiFi ESP32**
+                                    const ssid = "ESP32-Setup"; // Ganti dengan SSID ESP32
+                                    const password = "12345678";  // Ganti dengan password ESP32
+
+                                    try {
+                                        if (/Android/i.test(navigator.userAgent)) {
+                                            // **Android: Gunakan intent untuk langsung membuka pengaturan WiFi**
+                                            window.location.href = `intent://com.android.settings.wifi.ADD_NETWORK?ssid=${ssid}&password=${password}#Intent;scheme=android;end;`;
+                                        } else if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+                                            // **iOS: Arahkan ke pengaturan WiFi secara manual**
+                                            alert("Silakan hubungkan ke WiFi ESP32 secara manual melalui Pengaturan WiFi.");
+                                            window.location.href = "App-Prefs:root=WIFI";
+                                        } else {
+                                            // **Jika browser tidak mendukung, tampilkan QR Code untuk koneksi WiFi**
+                                            Swal.fire({
+                                                icon: "info",
+                                                title: "Sambungkan ke WiFi",
+                                                html: `
+                                        <p>Scan QR Code di bawah untuk menyambung ke WiFi:</p>
+                                        <img src="https://api.qrserver.com/v1/create-qr-code/?data=WIFI:S:${ssid};T:WPA;P:${password};H:false;&size=200x200" alt="QR WiFi ESP32">
+                                        <p><strong>SSID:</strong> ${ssid}</p>
+                                        <p><strong>Password:</strong> ${password}</p>
+                                    `,
+                                                confirmButtonText: "OK"
+                                            });
+                                        }
+                                    } catch (wifiError) {
+                                        console.error("Gagal menyambungkan ke WiFi:", wifiError);
+                                    }
+                                } else {
+                                    console.warn("Perangkat tidak ditemukan:", scannedBarcode);
+                                    Swal.fire({
+                                        icon: "error",
+                                        title: "Perangkat Tidak Terdaftar",
+                                        text: "Barcode yang di-scan tidak ditemukan dalam sistem.",
+                                        confirmButtonText: "OK"
+                                    });
                                 }
-                            } else {
-                                console.warn("Perangkat tidak ditemukan:", scannedBarcode);
-                                Swal.fire({
-                                    icon: "error",
-                                    title: "Perangkat Tidak Terdaftar",
-                                    text: "Barcode yang di-scan tidak ditemukan dalam sistem.",
-                                    confirmButtonText: "OK"
-                                }); // **Tampilkan peringatan jika barcode tidak ada**
+                            } catch (error) {
+                                console.error("Error validasi barcode:", error);
                             }
-                        } catch (error) {
-                            console.error("Error validasi barcode:", error);
                         }
-                    }
-                });
-            } catch (error) {
-                console.error("Error membuka kamera:", error);
+                    });
+                } catch (error) {
+                    console.error("Error membuka kamera:", error);
+                }
             }
-        }
+
+
 
 
 
