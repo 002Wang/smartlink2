@@ -21,52 +21,8 @@
 
     <!-- Custom styles for this template-->
     <link href="css/sb-admin-2.min.css" rel="stylesheet">
-    <style>
-        .custom-svg {
-            fill: blue;
-            /* Mengubah warna dalam */
-            stroke: white;
-            /* Mengubah garis tepi */
-        }
-
-        .btn-close {
-            display: inline-block !important;
-        }
-
-        .perangkat-card {
-            width: 250px;
-            background: #ffffff;
-            border-radius: 10px;
-            box-shadow: 2px 4px 10px rgba(0, 0, 0, 0.1);
-            padding: 15px;
-            margin: 10px;
-            display: inline-block;
-            text-align: center;
-            transition: transform 0.2s ease-in-out;
-        }
-
-        .perangkat-card:hover {
-            transform: scale(1.05);
-        }
-
-        .perangkat-card h3 {
-            margin-bottom: 10px;
-            font-size: 18px;
-            color: #333;
-        }
-
-        .perangkat-card p {
-            margin: 5px 0;
-            font-size: 14px;
-            color: #666;
-        }
-
-        .row {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-    </style>
+    <link rel="stylesheet" href="css/mycss.css">
+    
 
 </head>
 
@@ -214,8 +170,7 @@
                                     </div>
                                 </form>
                             </div>
-                        </li>
-
+                        </li>                        
                         <!-- Nav Item - Alerts -->
                         <li class="nav-item dropdown no-arrow mx-1">
                             <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button"
@@ -334,6 +289,7 @@
                     <!-- Page Heading -->
                     <div class="d-sm-flex align-items-center justify-content-between mb-4">
                         <h1 class="h3 mb-0 text-gray-800">Beranda</h1>
+                        
                         <!-- Example single danger button -->
                         <div class="btn-group">
                             <button type="button" class="btn btn-info dropdown-toggle" data-bs-toggle="dropdown"
@@ -342,12 +298,16 @@
                                 Perangkat
                             </button>
                             <ul class="dropdown-menu">
+                                <li class="pointer"><a class="dropdown-item" data-bs-toggle="modal"
+                                        data-bs-target="#staticBackdrop2" class="pointer">Input manual</a></li>
+                                <li class="pointer"><a class="dropdown-item" data-bs-toggle="modal"
+                                        data-bs-target="#staticBackdrop" >Barcode</a></li>
                                 <li><a class="dropdown-item" data-bs-toggle="modal"
-                                        data-bs-target="#staticBackdrop2">Input manual</a></li>
-                                <li><a class="dropdown-item" data-bs-toggle="modal"
-                                        data-bs-target="#staticBackdrop">Barcode</a></li>
+                                        data-bs-target="#infoModal"><p class="panduan pointer">Panduan koneksi wifi</p></a></li>
                             </ul>
                         </div>
+
+                                        
 
                         <!-- Modal Barcode-->
                         <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false"
@@ -367,6 +327,78 @@
                                         <button type="button" class="btn btn-info" id="restartScan">Scan Ulang</button>
                                         <button type="button" class="btn btn-danger"
                                             data-bs-dismiss="modal">Tutup</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Modal SSID & Password -->
+                        <div class="modal fade" id="infoModal" tabindex="-1" aria-labelledby="infoModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-scrollable modal-lg">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="infoModalLabel">Panduan Koneksi WiFi Smartlink</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">x</button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p class="text-center fw-bold">Hubungkan terlebih dahulu perangkat Smartlink anda ke WiFi sekitar</p>
+                        
+                                        <!-- Informasi SSID & Password -->
+                                        <div class="alert alert-info text-center">
+                                            <p><strong>SSID:</strong> <span id="ssidDisplay"></span></p>
+                                            <p><strong>Password:</strong> <span id="passwordDisplay"></span></p>
+                                            <p><strong>Jika informasi ssid dan password tidak muncul, silahkan lihat informasi dibawah perangkat anda</strong> <span id="passwordDisplay"></span></p>
+                                        </div>
+                        
+                                        <hr>
+                        
+                                        <!-- Langkah 1 -->
+                                        <div class="text-center">
+                                            <h5><b>Langkah 1</b></h5>
+                                            <p>Pilih SSID perangkat Smartlink didaftar WiFi perangkat Anda.</p>
+                                            <img src="img/tutorial/1.jpeg" alt="Langkah 1" class="img-fluid rounded shadow-sm" width="40%">
+                                        </div>
+                        
+                                        <hr>
+                        
+                                        <!-- Langkah 2 -->
+                                        <div class="text-center">
+                                            <h5><b>Langkah 2</b></h5>
+                                            <p>Masukkan password yang sesuai untuk terhubung.</p>
+                                            <img src="img/tutorial/2.jpeg" alt="Langkah 2" class="img-fluid rounded shadow-sm" width="40%">
+                                        </div>
+                        
+                                        <hr>
+                        
+                                        <p class="text-center">Tunggu hingga perangkat Anda terhubung ke WiFi Smartlink.</p>
+                        
+                                        <hr>
+                        
+                                        <!-- Langkah 3 -->
+                                        <div class="text-center">
+                                            <h5><b>Langkah 3</b></h5>
+                                            <p>Setelah berhasil terhubung silahkan klik link atau tekan tombol setting perangkat</p>
+                                            <p>
+                                                <a href="http://192.168.4.1/" target="_blank">
+                                                    Masuk ke Link
+                                                </a>
+                                            </p>
+                                            <a href="http://192.168.4.1/" target="_blank">
+                                                <button class="btn btn-warning">Setting Perangkat</button>
+                                            </a>
+
+                                            <p>Jika belum berhasil masuk, pastikan device anda terhubung ke jaringan Perangkat SmartLink</p>
+                                            
+                                        </div>
+                                        <div class="text-center mt-5">
+                                            <p>Masukkan SSID dan Password dari Wifi anda</p>
+                                            <img src="img/tutorial/3.jpeg" alt="Langkah 3" class="img-fluid rounded shadow-sm" width="40%">
+                                        </div>
+                                        
+                                    </div>
+                        
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-primary w-100" data-bs-dismiss="modal" id="btnLanjut">Lanjut</button>
                                     </div>
                                 </div>
                             </div>
@@ -438,10 +470,14 @@
                     <!-- <button id="tombolTambah">Tambah data test</button> -->
 
                     <!-- Content Row -->
+                    
+                    
+
                     <div class="row" id="perangkatContainer">
 
                         <!-- disini akan mucnul perangkat yang sudah ditambahkan -->
 
+                        
 
                     </div>
 
@@ -528,7 +564,7 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
         import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
         import { getFirestore, doc, getDoc, collection, getDocs } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-firestore.js";
-        import { getDatabase, ref, push, set, get } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-database.js";
+        import { getDatabase, ref, push, set, get, onValue } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-database.js";
         const firebaseConfig = {
             apiKey: "AIzaSyALFEuoRLHCysli6QyB4lSS0qBZf6tKg3Y",
             authDomain: "aplikasi-iot-c68b3.firebaseapp.com",
@@ -544,34 +580,33 @@
         const db = getFirestore(app);
         const dbRealTime = getDatabase(app);
 
+        const perangkatRef = ref(dbRealTime, "perangkat/k3c67f92022");
 
-        //  Fungsi Menambahkan Data Dummy
-        //function tambahPerangkat() {
-        //    const produkKey = "k3c981b918"; // Produk key yang digunakan sebagai ID perangkat
-        //    const perangkatRef = ref(dbRealTime, `perangkat/${produkKey}`); // Referensi langsung ke perangkat dengan produkKey
-        //
-        //    const perangkatBaru = {
-        //        nama: "SmartCity",
-        //        produk_key: produkKey,
-        //        status: "Aktif",
-        //        lokasi: "jl. Andi patanri",
-        //        suhu: "25°C",
-        //        kelembaban: "40%",
-        //        waktu_ditambahkan: new Date().toISOString()
-        //    };
-        //
-        //    // Simpan data langsung di perangkat dengan produkKey
-        //    set(perangkatRef, perangkatBaru)
-        //        .then(() => {
-        //            console.log("Perangkat berhasil ditambahkan!");
-        //            alert("Perangkat berhasil ditambahkan!");
-        //        })
-        //        .catch((error) => {
-        //            console.error("Error menambahkan perangkat:", error);
-        //        });
-        //}
-        //document.getElementById("tombolTambah").addEventListener("click", tambahPerangkat);
+            // Fungsi untuk mengecek status perangkat
+            function cekStatusPerangkat(snapshot) {
+                if (snapshot.exists()) {
+                    const data = snapshot.val();
+                    const lastActive = data.last_active; // Ambil timestamp terakhir aktif
+                    const currentTime = Date.now(); // Waktu saat ini dalam milidetik
+                    const selisih = currentTime - lastActive;
 
+                    // Tentukan status perangkat
+                    let status = "Offline";
+                    if (selisih <= 10000) { // Jika terakhir aktif dalam 10 detik
+                        status = "Online";
+                    }
+
+                    // Tampilkan di halaman web
+                    document.getElementById("statusPerangkat").innerText = `Status: ${status}`;
+                } else {
+                    console.log("Data perangkat tidak ditemukan.");
+                }
+            }
+
+            // Pantau perubahan data perangkat
+            onValue(perangkatRef, (snapshot) => {
+                cekStatusPerangkat(snapshot);
+            });
 
         // Cek apakah user sedang login
         onAuthStateChanged(auth, async (user) => {
@@ -645,104 +680,130 @@
         }
 
         async function startCamera() {
-            await stopCamera(); // Hentikan kamera sebelum memulai ulang
-            resultText.textContent = "Mencari barcode...";
+                await stopCamera(); // Hentikan kamera sebelum memulai ulang
+                resultText.textContent = "Mencari barcode...";
 
-            try {
-                const constraints = {
-                    video: { deviceId: cameraSelect.value ? { exact: cameraSelect.value } : undefined }
-                };
+                try {
+                    const constraints = {
+                        video: { deviceId: cameraSelect.value ? { exact: cameraSelect.value } : undefined }
+                    };
 
-                stream = await navigator.mediaDevices.getUserMedia(constraints);
-                videoElement.srcObject = stream;
+                    stream = await navigator.mediaDevices.getUserMedia(constraints);
+                    videoElement.srcObject = stream;
 
-                scanner.decodeFromVideoDevice(cameraSelect.value, videoElement, async (result, err) => {
-                    if (result) {
-                        resultText.textContent = "Hasil: " + result.text;
-                        await stopCamera();
+                    scanner.decodeFromVideoDevice(cameraSelect.value, videoElement, async (result, err) => {
+                        if (result) {
+                            resultText.textContent = "Hasil: " + result.text;
+                            await stopCamera();
 
-                        const scannedBarcode = result.text.trim(); // Hasil scan
+                            const scannedBarcode = result.text.trim(); // Hasil scan
 
-                        try {
-                            // **Ambil semua perangkat dari koleksi produk_key**
-                            const perangkatRef = collection(db, "produk_key");
-                            const perangkatSnap = await getDocs(perangkatRef);
-
-                            let barcodeTerdaftar = false;
-
-                            perangkatSnap.forEach((doc) => {
-                                const data = doc.data();
-
-                                // **Cek apakah barcode yang discan ada sebagai field dalam dokumen**
-                                if (scannedBarcode in data) {
-                                    barcodeTerdaftar = true;
-                                }
-                            });
-
-                            if (barcodeTerdaftar) {
-                                console.log("Perangkat terdaftar:", scannedBarcode);
-
-                                // Simpan produk_key ke localStorage sebelum OTP dikirim
-                                localStorage.setItem("produk_key", scannedBarcode);
-
-                                // **Ambil email user dari Firestore**
-                                const user = auth.currentUser;
-                                if (user) {
-                                    const userRef = doc(db, "users", user.uid);
-                                    const userSnap = await getDoc(userRef);
-
-                                    if (userSnap.exists()) {
-                                        const userData = userSnap.data();
-                                        const userEmail = userData.email;
-
-                                        if (userEmail) {
-                                            sendOTPEmail(userEmail); // Kirim OTP ke email user
-
-                                            // **Tutup modal scanner sebelum buka modal OTP**
-                                            var scannerModal = bootstrap.Modal.getInstance(document.getElementById("staticBackdrop"));
-                                            if (scannerModal) {
-                                                scannerModal.hide();
-                                            }
-
-                                            // **Tampilkan loading spinner sementara modal scanner tertutup dan modal OTP dibuka**
-                                            var loading = document.getElementById("loading");
-                                            loading.classList.remove("d-none"); // Menampilkan loading
-
-                                            // **Gunakan event listener untuk menunggu modal scanner tertutup sebelum membuka modal OTP**
-                                            scannerModal._element.addEventListener('hidden.bs.modal', function () {
-                                                // Setelah modal scanner tertutup, buka modal OTP
-                                                var otpModal = new bootstrap.Modal(document.getElementById("otpModal"));
-                                                otpModal.show();
-
-                                                // Sembunyikan loading spinner setelah modal OTP ditampilkan
-                                                loading.classList.add("d-none");
-                                            });
-                                        } else {
-                                            console.warn("Email tidak ditemukan di Firestore.");
-                                        }
-
-                                    } else {
-                                        console.warn("Data user tidak ditemukan di Firestore.");
-                                    }
-                                }
-                            } else {
-                                console.warn("Perangkat tidak ditemukan:", scannedBarcode);
+                            // **Pisahkan QR Code menjadi produk_id, ssid, dan password**
+                            const qrParts = scannedBarcode.split(",");
+                            if (qrParts.length !== 3) {
                                 Swal.fire({
                                     icon: "error",
-                                    title: "Perangkat Tidak Terdaftar",
-                                    text: "Barcode yang di-scan tidak ditemukan dalam sistem.",
+                                    title: "Format QR Code Salah",
+                                    text: "Pastikan QR Code memiliki format: ProdukID, SSID, Password",
                                     confirmButtonText: "OK"
-                                }); // **Tampilkan peringatan jika barcode tidak ada**
+                                });
+                                return;
                             }
-                        } catch (error) {
-                            console.error("Error validasi barcode:", error);
+
+                            const produkID = qrParts[0].trim();
+                            const ssid = qrParts[1].trim();
+                            const password = qrParts[2].trim();
+
+                            try {
+                                // **Ambil semua perangkat dari koleksi produk_key**
+                                const perangkatRef = collection(db, "produk_key");
+                                const perangkatSnap = await getDocs(perangkatRef);
+
+                                let barcodeTerdaftar = false;
+
+                                perangkatSnap.forEach((doc) => {
+                                    const data = doc.data();
+
+                                    // **Cek apakah produk_id yang discan ada dalam database**
+                                    if (produkID in data) {
+                                        barcodeTerdaftar = true;
+                                    }
+                                });
+
+                                if (barcodeTerdaftar) {
+                                    console.log("Perangkat terdaftar:", scannedBarcode);
+
+                                    // Simpan produk_key ke localStorage sebelum OTP dikirim
+                                    localStorage.setItem("produk_key", produkID);
+                                    localStorage.setItem("ssid", ssid);
+                                    localStorage.setItem("password", password);
+
+                                    // **Tampilkan SSID dan Password ke user**
+                                    document.getElementById("ssidDisplay").textContent = `SSID: ${ssid}`;
+                                    document.getElementById("passwordDisplay").textContent = `Password: ${password}`;
+
+
+                                    // **Ambil email user dari Firestore**
+                                    const user = auth.currentUser;
+                                    if (user) {
+                                        const userRef = doc(db, "users", user.uid);
+                                        const userSnap = await getDoc(userRef);
+
+                                        if (userSnap.exists()) {
+                                            const userData = userSnap.data();
+                                            const userEmail = userData.email;
+
+                                            if (userEmail) {
+                                                sendOTPEmail(userEmail); // Kirim OTP ke email user
+
+                                                // **Tutup modal scanner sebelum buka modal OTP**
+                                                var scannerModal = bootstrap.Modal.getInstance(document.getElementById("staticBackdrop"));
+                                                if (scannerModal) {
+                                                    scannerModal.hide();
+                                                }
+
+                                                // **Tampilkan loading spinner sementara modal scanner tertutup dan modal OTP dibuka**
+                                                var loading = document.getElementById("loading");
+                                                loading.classList.remove("d-none"); // Menampilkan loading
+
+                                                // **Gunakan event listener untuk menunggu modal scanner tertutup sebelum membuka modal OTP**
+                                                scannerModal._element.addEventListener('hidden.bs.modal', function () {
+                                                    // Setelah modal scanner tertutup, buka modal OTP
+                                                    var otpModal = new bootstrap.Modal(document.getElementById("otpModal"));
+                                                    otpModal.show();
+
+                                                    // Sembunyikan loading spinner setelah modal OTP ditampilkan
+                                                    loading.classList.add("d-none");
+                                                });
+                                            } else {
+                                                console.warn("Email tidak ditemukan di Firestore.");
+                                            }
+
+                                        } else {
+                                            console.warn("Data user tidak ditemukan di Firestore.");
+                                        }
+                                    }
+
+                                } else {
+                                    console.warn("Perangkat tidak ditemukan:", produkID);
+                                    Swal.fire({
+                                        icon: "error",
+                                        title: "Perangkat Tidak Terdaftar",
+                                        text: "Produk ID tidak ditemukan dalam sistem.",
+                                        confirmButtonText: "OK"
+                                    });
+                                }
+                            } catch (error) {
+                                console.error("Error validasi barcode:", error);
+                            }
                         }
-                    }
-                });
-            } catch (error) {
-                console.error("Error membuka kamera:", error);
+                    });
+                } catch (error) {
+                    console.error("Error membuka kamera:", error);
+                }
             }
-        }
+
+
 
 
 
@@ -1000,127 +1061,201 @@
         });
 
         async function cekOTP() {
-            let inputOTP = document.getElementById("otpInput").value;
-            let storedOTP = localStorage.getItem("otp_code");
+                let inputOTP = document.getElementById("otpInput").value;
+                let storedOTP = localStorage.getItem("otp_code");
 
-            if (!inputOTP) {
-                Swal.fire({
-                    icon: "warning",
-                    title: "OTP Kosong",
-                    text: "Masukkan kode OTP yang telah dikirim ke email Anda!",
-                    confirmButtonText: "OK"
-                });
-                return;
-            }
+                if (!inputOTP) {
+                    Swal.fire({
+                        icon: "warning",
+                        title: "OTP Kosong",
+                        text: "Masukkan kode OTP yang telah dikirim ke email Anda!",
+                        confirmButtonText: "OK"
+                    });
+                    return;
+                }
 
-            if (inputOTP === storedOTP) {
-                Swal.fire({
-                    icon: "success",
-                    title: "OTP Valid!",
-                    text: "Verifikasi berhasil. Anda dapat melanjutkan.",
-                    confirmButtonText: "OK"
-                }).then(async () => {
-                    localStorage.setItem("isLoggedIn", "true");
-                    localStorage.removeItem("otp_code");
+                if (inputOTP === storedOTP) {
+                    Swal.fire({
+                        icon: "success",
+                        title: "OTP Valid!",
+                        text: "Verifikasi berhasil. Anda dapat melanjutkan.",
+                        confirmButtonText: "OK"
+                    }).then(async () => {
+                        localStorage.setItem("isLoggedIn", "true");
+                        localStorage.removeItem("otp_code");
 
+                        const auth = getAuth();
+                        const user = auth.currentUser;
 
-                    const auth = getAuth();
-                    const user = auth.currentUser;
+                        if (user) {
+                            let uid = user.uid;
+                            console.log("UID Pengguna:", uid);
+                            localStorage.setItem("pemilik_uid", uid);
 
-                    if (user) {
-                        let uid = user.uid;
-                        console.log("UID Pengguna:", uid);
-                        localStorage.setItem("pemilik_uid", uid); // Simpan UID di localStorage
+                            const db = getDatabase();
+                            const userRef = ref(db, `users/${uid}`);
+                            await set(userRef, { uid: uid, email: user.email });
 
-                        const db = getDatabase();
-                        const userRef = ref(db, `users/${uid}`);
-                        await set(userRef, { uid: uid, email: user.email });
+                            let produkKey = localStorage.getItem("produk_key");
+                            if (produkKey) {
+                                console.log("Menghubungkan UID dengan perangkat:", produkKey);
+                                const perangkatRef = ref(db, `perangkat/${produkKey}`);
+                                await update(perangkatRef, { pemilik_uid: uid });
 
-                        let produkKey = localStorage.getItem("produk_key");
-                        if (produkKey) {
-                            console.log("Menghubungkan UID dengan perangkat:", produkKey);
-                            const perangkatRef = ref(db, `perangkat/${produkKey}`);
-                            await update(perangkatRef, { pemilik_uid: uid });
+                                tampilkanDataPerPemilik(uid);
 
-                            tampilkanDataPerPemilik(uid); // Tampilkan data setelah update
-                            window.location.href = "index.html"
+                                // **Tutup modal OTP sebelum menampilkan modal SSID**
+                                var otpModal = bootstrap.Modal.getInstance(document.getElementById("otpModal"));
+                                otpModal.hide();
+
+                                // **Tampilkan modal SSID setelah verifikasi berhasil**
+                                document.getElementById("ssidDisplay").textContent = `SSID: ${localStorage.getItem("ssid")}`;
+                                document.getElementById("passwordDisplay").textContent = `Password: ${localStorage.getItem("password")}`;
+
+                                var infoModal = new bootstrap.Modal(document.getElementById("infoModal"));
+                                infoModal.show();
+                            } else {
+                                console.warn("produk_key tidak ditemukan di localStorage.");
+                            }
                         } else {
-                            console.warn("produk_key tidak ditemukan di localStorage.");
+                            console.warn("User belum login di Firebase Authentication.");
                         }
-                    } else {
-                        console.warn("User belum login di Firebase Authentication.");
-                    }
-                });
-            } else {
-                Swal.fire({
-                    icon: "error",
-                    title: "OTP Salah",
-                    text: "Kode OTP yang Anda masukkan salah. Coba lagi.",
-                    confirmButtonText: "OK"
-                });
+                    });
+                } else {
+                    Swal.fire({
+                        icon: "error",
+                        title: "OTP Salah",
+                        text: "Kode OTP yang Anda masukkan salah. Coba lagi.",
+                        confirmButtonText: "OK"
+                    });
+                }
             }
-        }
+
 
         // Fungsi untuk menampilkan data perangkat berdasarkan pemilik_uid
         function tampilkanDataPerPemilik(uid) {
-            const db = getDatabase();
-            const perangkatRef = ref(db, "perangkat");
+                const db = getDatabase();
+                const perangkatRef = ref(db, "perangkat");
 
-            onValue(perangkatRef, (snapshot) => {
-                if (snapshot.exists()) {
-                    //console.log("Data berhasil diambil dari Firebase.");
-                    //console.log("Hasil query Firebase:", snapshot.val());
+                onValue(perangkatRef, (snapshot) => {
+                    if (snapshot.exists()) {
+                        const container = document.getElementById("perangkatContainer");
+                        container.innerHTML = ""; // Kosongkan container sebelum menampilkan data baru
 
-                    const container = document.getElementById("perangkatContainer");
-                    container.innerHTML = ""; // Kosongkan container sebelum menampilkan data baru
+                        let perangkatAda = false;
+                        snapshot.forEach(childSnapshot => {
+                            const data = childSnapshot.val();
+                            const perangkatId = childSnapshot.key; // ID perangkat
 
-                    let perangkatAda = false;
-                    snapshot.forEach(childSnapshot => {
-                        const data = childSnapshot.val();
-                        const perangkatId = childSnapshot.key; // Mendapatkan ID perangkat
+                            // Filter data berdasarkan pemilik_uid yang sesuai
+                            if (data.pemilik_uid === uid) {
+                                perangkatAda = true;
 
-                        // Filter data berdasarkan pemilik_uid yang sesuai
-                        if (data.pemilik_uid === uid) {
-                            perangkatAda = true;
-                            const card = document.createElement("div");
-                            card.classList.add("perangkat-card");
+                                const card = document.createElement("div");
+                                card.classList.add("perangkat-card");
+                                card.setAttribute("data-id", perangkatId); // Tandai elemen dengan ID perangkat
 
-                            card.innerHTML = `
-                        <h3>${data.nama || "Tidak ada nama"}</h3>
-                        <p><strong>Lokasi:</strong> ${data.lokasi || "Tidak ada lokasi"}</p>
-                        <p><strong>Status:</strong> ${data.status || "Tidak ada status"}</p>
-                        <p><strong>Suhu:</strong> ${data.suhu || "Tidak ada suhu"}°C</p>
-                        <p><strong>Kelembaban:</strong> ${data.kelembaban || "Tidak ada kelembaban"}%</p>
-                        <p><strong>Waktu:</strong> ${data.waktu_ditambahkan || "Tidak ada waktu"}</p>
-                        <button class="hapus-btn" data-id="${perangkatId}">Hapus Pemilik UID</button>
-                    `;
+                                // Dapatkan kategori perangkat
+                                const kategori = data.kategori || "lainnya";
+                                const lastActive = data.last_active || 0; // Ambil last_active dari database
+                                const currentTime = Date.now(); // Waktu sekarang
+                                const selisih = currentTime - lastActive; // Selisih waktu
 
-                            container.appendChild(card);
+                                // Tentukan status perangkat
+                                let statusPerangkat = "Offline ❌";
+                                if (selisih <= 10000) { // Jika aktif dalam 10 detik terakhir
+                                    statusPerangkat = "Online ✅";
+                                }
+
+                                // Template berdasarkan kategori
+                                let content = `<h3>${data.nama || "Tidak ada nama"}</h3>`;
+
+                                switch (kategori.toLowerCase()) {
+                                    case "smartcity":
+                                        content += `
+                                <img src="img/smartcity/lampu_${data.lampu_status === 1 ? 'nyala' : 'mati'}.png" 
+                                alt="Lampu ${data.lampu_status === 1 ? 'Nyala' : 'Mati'}" width="50%">
+                                <p>Lampu ${data.lampu_status === 1 ? 'Menyala' : 'Mati'}</p>`;
+                                        break;
+
+                                    case "smarthome":
+                                        content += `
+                                <p><strong>Jenis Perangkat:</strong> ${data.jenis_perangkat || "Tidak ada jenis"}</p>
+                                <p><strong>Status Daya:</strong> ${data.status_daya || "Tidak ada status"}</p>`;
+                                        break;
+
+                                    case "smartagriculture":
+                                        content += `
+                                <p><strong>Jenis Tanaman:</strong> ${data.jenis_tanaman || "Tidak ada data"}</p>
+                                <p><strong>Kelembaban Tanah:</strong> ${data.kelembaban_tanah || "Tidak ada data"}</p>`;
+                                        break;
+
+                                    default:
+                                        Object.keys(data).forEach(key => {
+                                            if (key !== "pemilik_uid") {
+                                                content += `<p><strong>${key}:</strong> ${data[key] || "Tidak ada data"}</p>`;
+                                            }
+                                        });
+                                        break;
+                                }
+
+                                // Status perangkat
+                                content += `<p class="statusPerangkat">Status: <span>${statusPerangkat}</span></p>`;
+
+                                // Tombol hapus pemilik UID
+                                content += `<button class="hapus-btn btn btn-danger" data-id="${perangkatId}">Hapus Perangkat</button>`;
+
+                                card.innerHTML = content;
+                                container.appendChild(card);
+                            }
+                        });
+
+                        // Jika tidak ada perangkat dengan pemilik_uid yang sesuai
+                        if (!perangkatAda) {
+                            container.innerHTML = "<p>Tidak ada perangkat, silakan hubungkan perangkat SmartLink Anda.</p>";
                         }
-                    });
 
-                    // Jika tidak ada perangkat dengan pemilik_uid yang sesuai
-                    if (!perangkatAda) {
-                        container.innerHTML = "<p>Tidak ada perangkat, silahkan hubungkan perangkat SmartLink anda.</p>";
+                        // Event listener untuk tombol hapus
+                        document.querySelectorAll(".hapus-btn").forEach(button => {
+                            button.addEventListener("click", function () {
+                                const perangkatId = button.getAttribute("data-id");
+                                hapusPemilikUID(perangkatId);
+                            });
+                        });
+                    } else {
+                        console.log("Database kosong.");
+                        document.getElementById("perangkatContainer").innerHTML = "<p>Database kosong.</p>";
+                    }
+                }, (error) => {
+                    console.error("Terjadi kesalahan saat mengambil data:", error);
+                });
+
+                // **Listener untuk update status perangkat secara real-time**
+                onChildChanged(perangkatRef, (snapshot) => {
+                    const perangkatId = snapshot.key;
+                    const data = snapshot.val();
+                    const lastActive = data.last_active || 0;
+                    const currentTime = Date.now();
+                    const selisih = currentTime - lastActive;
+
+                    // Tentukan status perangkat
+                    let statusPerangkat = "Offline ❌";
+                    if (selisih <= 10000) { // Jika aktif dalam 10 detik terakhir
+                        statusPerangkat = "Online ✅";
                     }
 
-                    // Menambahkan event listener untuk tombol hapus
-                    const hapusButtons = document.querySelectorAll(".hapus-btn");
-                    hapusButtons.forEach(button => {
-                        button.addEventListener("click", function () {
-                            const perangkatId = button.getAttribute("data-id");
-                            hapusPemilikUID(perangkatId); // Panggil fungsi hapus pemilik_uid
-                        });
-                    });
-                } else {
-                    console.log("Database kosong.");
-                    const container = document.getElementById("perangkatContainer");
-                    container.innerHTML = "<p>Database kosong.</p>";
-                }
-            }, (error) => {
-                console.error("Terjadi kesalahan saat mengambil data:", error);
-            });
-        }
+                    // Perbarui status perangkat di dalam tampilan
+                    const card = document.querySelector(`.perangkat-card[data-id="${perangkatId}"]`);
+                    if (card) {
+                        const statusElement = card.querySelector(".statusPerangkat span");
+                        if (statusElement) {
+                            statusElement.textContent = statusPerangkat;
+                        }
+                    }
+                });
+            }
+
+
 
         // Fungsi untuk menghapus pemilik_uid dari data perangkat berdasarkan ID
         function hapusPemilikUID(perangkatId) {
@@ -1149,8 +1284,6 @@
                 tampilkanDataPerPemilik(savedUid);
             }
         });
-
-
 
 
     </script>
