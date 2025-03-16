@@ -1,0 +1,57 @@
+.custom-svg {
+    fill: blue;
+    /* Mengubah warna dalam */
+    stroke: white;
+    /* Mengubah garis tepi */
+}
+
+.btn-close {
+    display: inline-block !important;
+}
+
+.perangkat-card {
+    width: 250px;
+    background: #ffffff;
+    border-radius: 10px;
+    box-shadow: 2px 4px 10px rgba(0, 0, 0, 0.1);
+    padding: 15px;
+    margin: 10px;
+    display: inline-block;
+    text-align: center;
+    transition: transform 0.2s ease-in-out;
+}
+
+.perangkat-card:hover {
+    transform: scale(1.05);
+}
+
+.perangkat-card h3 {
+    margin-bottom: 10px;
+    font-size: 18px;
+    color: #333;
+}
+
+.perangkat-card p {
+    margin: 5px 0;
+    font-size: 14px;
+    color: #666;
+}
+
+.row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+
+
+/* --------------- */
+
+.panduan {
+    color: #e7d10def;
+    cursor: pointer;
+}
+
+.pointer {
+    cursor: pointer;
+}
