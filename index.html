@@ -10,10 +10,15 @@
     <meta name="author" content="">
 
     <title>SmartLink - Dashboard</title>
+    <link rel="icon" href="img/icon/monitoring_smart_home_humidity_thermal_electricity_home_icon_213873.ico" type="image/x-icon">
+
 
     <!-- Custom fonts for this template-->
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <!-- Tambahkan ini di dalam <head> -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
 
     <link
         href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
@@ -289,6 +294,7 @@
                     <!-- Page Heading -->
                     <div class="d-sm-flex align-items-center justify-content-between mb-4">
                         <h1 class="h3 mb-0 text-gray-800">Beranda</h1>
+                        
                         
                         <!-- Example single danger button -->
                         <div class="btn-group">
@@ -580,33 +586,6 @@
         const db = getFirestore(app);
         const dbRealTime = getDatabase(app);
 
-        const perangkatRef = ref(dbRealTime, "perangkat/k3c67f92022");
-
-            // Fungsi untuk mengecek status perangkat
-            function cekStatusPerangkat(snapshot) {
-                if (snapshot.exists()) {
-                    const data = snapshot.val();
-                    const lastActive = data.last_active; // Ambil timestamp terakhir aktif
-                    const currentTime = Date.now(); // Waktu saat ini dalam milidetik
-                    const selisih = currentTime - lastActive;
-
-                    // Tentukan status perangkat
-                    let status = "Offline";
-                    if (selisih <= 10000) { // Jika terakhir aktif dalam 10 detik
-                        status = "Online";
-                    }
-
-                    // Tampilkan di halaman web
-                    document.getElementById("statusPerangkat").innerText = `Status: ${status}`;
-                } else {
-                    console.log("Data perangkat tidak ditemukan.");
-                }
-            }
-
-            // Pantau perubahan data perangkat
-            onValue(perangkatRef, (snapshot) => {
-                cekStatusPerangkat(snapshot);
-            });
 
         // Cek apakah user sedang login
         onAuthStateChanged(auth, async (user) => {
@@ -1043,6 +1022,7 @@
     <script type="module">
         import { getDatabase, ref, query, orderByChild, equalTo, onValue, update, set } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-database.js";
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
+        
 
         document.addEventListener("DOMContentLoaded", function () {
             document.getElementById("otpButton").addEventListener("click", cekOTP);
@@ -1109,8 +1089,8 @@
                                 otpModal.hide();
 
                                 // **Tampilkan modal SSID setelah verifikasi berhasil**
-                                document.getElementById("ssidDisplay").textContent = `SSID: ${localStorage.getItem("ssid")}`;
-                                document.getElementById("passwordDisplay").textContent = `Password: ${localStorage.getItem("password")}`;
+                                document.getElementById("ssidDisplay").textContent = ` ${localStorage.getItem("ssid")}`;
+                                document.getElementById("passwordDisplay").textContent = ` ${localStorage.getItem("password")}`;
 
                                 var infoModal = new bootstrap.Modal(document.getElementById("infoModal"));
                                 infoModal.show();
@@ -1132,158 +1112,193 @@
             }
 
 
-        // Fungsi untuk menampilkan data perangkat berdasarkan pemilik_uid
-        function tampilkanDataPerPemilik(uid) {
-                const db = getDatabase();
-                const perangkatRef = ref(db, "perangkat");
+    // Fungsi untuk menampilkan data perangkat berdasarkan pemilik_uid
+    function tampilkanDataPerPemilik(uid) {
+        const db = getDatabase();
+        const perangkatRef = ref(db, "perangkat");
 
-                onValue(perangkatRef, (snapshot) => {
-                    if (snapshot.exists()) {
-                        const container = document.getElementById("perangkatContainer");
-                        container.innerHTML = ""; // Kosongkan container sebelum menampilkan data baru
+        onValue(perangkatRef, (snapshot) => {
+            if (snapshot.exists()) {
+                const container = document.getElementById("perangkatContainer");
+                container.innerHTML = ""; // Kosongkan container sebelum menampilkan data baru
 
-                        let perangkatAda = false;
-                        snapshot.forEach(childSnapshot => {
-                            const data = childSnapshot.val();
-                            const perangkatId = childSnapshot.key; // ID perangkat
+                let perangkatAda = false;
+                snapshot.forEach(childSnapshot => {
+                    const data = childSnapshot.val();
+                    const perangkatId = childSnapshot.key; // ID perangkat
 
-                            // Filter data berdasarkan pemilik_uid yang sesuai
-                            if (data.pemilik_uid === uid) {
-                                perangkatAda = true;
+                    // Filter data berdasarkan pemilik_uid yang sesuai
+                    if (data.pemilik_uid === uid) {
+                        perangkatAda = true;
 
-                                const card = document.createElement("div");
-                                card.classList.add("perangkat-card");
-                                card.setAttribute("data-id", perangkatId); // Tandai elemen dengan ID perangkat
+                        const card = document.createElement("div");
+                        card.classList.add("perangkat-card");
+                        card.setAttribute("data-id", perangkatId); // Tandai elemen dengan ID perangkat
 
-                                // Dapatkan kategori perangkat
-                                const kategori = data.kategori || "lainnya";
-                                const lastActive = data.last_active || 0; // Ambil last_active dari database
-                                const currentTime = Date.now(); // Waktu sekarang
-                                const selisih = currentTime - lastActive; // Selisih waktu
+                        // Dapatkan kategori perangkat
+                        const kategori = data.kategori || "lainnya";
+                        const lastActive = data.last_active || 0; // Ambil last_active dari database
+                        const currentTime = Date.now(); // Waktu sekarang
+                        const selisih = currentTime - lastActive; // Selisih waktu
 
-                                // Tentukan status perangkat
-                                let statusPerangkat = "Offline ❌";
-                                if (selisih <= 10000) { // Jika aktif dalam 10 detik terakhir
-                                    statusPerangkat = "Online ✅";
-                                }
+                        // Tentukan status perangkat
+                        let statusPerangkat = "Offline ❌";
+                        if (selisih <= 10000) { // Jika aktif dalam 10 detik terakhir
+                            statusPerangkat = "Online ✅";
+                        }
 
-                                // Template berdasarkan kategori
-                                let content = `<h3>${data.nama || "Tidak ada nama"}</h3>`;
+                        // Template berdasarkan kategori
+                        let content = `<h3>${data.nama || "Tidak ada nama"}</h3>`;
 
-                                switch (kategori.toLowerCase()) {
-                                    case "smartcity":
-                                        content += `
-                                <img src="img/smartcity/lampu_${data.lampu_status === 1 ? 'nyala' : 'mati'}.png" 
-                                alt="Lampu ${data.lampu_status === 1 ? 'Nyala' : 'Mati'}" width="50%">
-                                <p>Lampu ${data.lampu_status === 1 ? 'Menyala' : 'Mati'}</p>`;
-                                        break;
+                        switch (kategori.toLowerCase()) {
+                            case "smartcity":
+                                content += `                                        
+                                        <img src="img/smartcity/lampu_${data.lampu_status === 1 ? 'nyala' : 'mati'}.png" 
+                                        alt="Lampu ${data.lampu_status === 1 ? 'Nyala' : 'Mati'}" width="50%">
 
-                                    case "smarthome":
-                                        content += `
+                                        <!-- Switch Lampu -->
+                                        <div class="form-check form-switch lampu-container" id="lampuContainer-${perangkatId}" 
+                                            style="display: ${data.mode_kontrol === 'otomatis' ? 'none' : 'block'};">
+                                            <input class="form-check-input lampu-toggle" type="checkbox" role="switch"
+                                                id="lampuSwitch-${perangkatId}" ${data.lampu_status === 1 ? "checked" : ""} data-id="${perangkatId}">
+                                            <label class="form-check-label" for="lampuSwitch-${perangkatId}">
+                                                <span id="lampuLabel-${perangkatId}">${data.lampu_status === 1 ? "Menyala" : "Mati"}</span>
+                                            </label>
+                                        </div>
+
+                                        <!-- Tombol Mode Otomatis/Manual -->
+                                        <button class="btn btn-primary mode-toggle" data-id="${perangkatId}" data-mode="${data.mode_kontrol || 'manual'}">
+                                            Mode: <span id="modeLabel-${perangkatId}">${data.mode_kontrol === "otomatis" ? "Otomatis" : "Manual"}</span>
+                                        </button>`;
+                                break;
+
+                            case "smarthome":
+                                content += `
                                 <p><strong>Jenis Perangkat:</strong> ${data.jenis_perangkat || "Tidak ada jenis"}</p>
                                 <p><strong>Status Daya:</strong> ${data.status_daya || "Tidak ada status"}</p>`;
-                                        break;
+                                break;
 
-                                    case "smartagriculture":
-                                        content += `
+                            case "smartagriculture":
+                                content += `
                                 <p><strong>Jenis Tanaman:</strong> ${data.jenis_tanaman || "Tidak ada data"}</p>
                                 <p><strong>Kelembaban Tanah:</strong> ${data.kelembaban_tanah || "Tidak ada data"}</p>`;
-                                        break;
+                                break;
 
-                                    default:
-                                        Object.keys(data).forEach(key => {
-                                            if (key !== "pemilik_uid") {
-                                                content += `<p><strong>${key}:</strong> ${data[key] || "Tidak ada data"}</p>`;
-                                            }
-                                        });
-                                        break;
-                                }
-
-                                // Status perangkat
-                                content += `<p class="statusPerangkat">Status: <span>${statusPerangkat}</span></p>`;
-
-                                // Tombol hapus pemilik UID
-                                content += `<button class="hapus-btn btn btn-danger" data-id="${perangkatId}">Hapus Perangkat</button>`;
-
-                                card.innerHTML = content;
-                                container.appendChild(card);
-                            }
-                        });
-
-                        // Jika tidak ada perangkat dengan pemilik_uid yang sesuai
-                        if (!perangkatAda) {
-                            container.innerHTML = "<p>Tidak ada perangkat, silakan hubungkan perangkat SmartLink Anda.</p>";
+                            default:
+                                Object.keys(data).forEach(key => {
+                                    if (key !== "pemilik_uid") {
+                                        content += `<p><strong>${key}:</strong> ${data[key] || "Tidak ada data"}</p>`;
+                                    }
+                                });
+                                break;
                         }
 
-                        // Event listener untuk tombol hapus
-                        document.querySelectorAll(".hapus-btn").forEach(button => {
-                            button.addEventListener("click", function () {
-                                const perangkatId = button.getAttribute("data-id");
-                                hapusPemilikUID(perangkatId);
-                            });
-                        });
-                    } else {
-                        console.log("Database kosong.");
-                        document.getElementById("perangkatContainer").innerHTML = "<p>Database kosong.</p>";
-                    }
-                }, (error) => {
-                    console.error("Terjadi kesalahan saat mengambil data:", error);
-                });
+                        // Status perangkat
+                        content += `<p class="statusPerangkat">Status: <span>${statusPerangkat}</span></p>`;
 
-                // **Listener untuk update status perangkat secara real-time**
-                onChildChanged(perangkatRef, (snapshot) => {
-                    const perangkatId = snapshot.key;
-                    const data = snapshot.val();
-                    const lastActive = data.last_active || 0;
-                    const currentTime = Date.now();
-                    const selisih = currentTime - lastActive;
+                        // Tombol hapus pemilik UID
+                        content += `<button class="hapus-btn btn btn-danger" data-id="${perangkatId}">Hapus Perangkat</button>`;
 
-                    // Tentukan status perangkat
-                    let statusPerangkat = "Offline ❌";
-                    if (selisih <= 10000) { // Jika aktif dalam 10 detik terakhir
-                        statusPerangkat = "Online ✅";
-                    }
-
-                    // Perbarui status perangkat di dalam tampilan
-                    const card = document.querySelector(`.perangkat-card[data-id="${perangkatId}"]`);
-                    if (card) {
-                        const statusElement = card.querySelector(".statusPerangkat span");
-                        if (statusElement) {
-                            statusElement.textContent = statusPerangkat;
-                        }
+                        card.innerHTML = content;
+                        container.appendChild(card);
                     }
                 });
+
+                // Jika tidak ada perangkat dengan pemilik_uid yang sesuai
+                if (!perangkatAda) {
+                    container.innerHTML = "<p>Tidak ada perangkat, silakan hubungkan perangkat SmartLink Anda.</p>";
+                }
+                tambahkanEventListener();
+
+                // Event listener untuk tombol hapus
+                document.querySelectorAll(".hapus-btn").forEach(button => {
+                    button.addEventListener("click", function () {
+                        const perangkatId = button.getAttribute("data-id");
+                        hapusPemilikUID(perangkatId);
+                    });
+                });
+            } else {
+                console.log("Database kosong.");
+                document.getElementById("perangkatContainer").innerHTML = "<p>Database kosong.</p>";
             }
-
-
-
-        // Fungsi untuk menghapus pemilik_uid dari data perangkat berdasarkan ID
-        function hapusPemilikUID(perangkatId) {
-            const db = getDatabase();
-            const perangkatRef = ref(db, `perangkat/${perangkatId}`);
-
-            // Menghapus hanya field pemilik_uid
-            update(perangkatRef, {
-                pemilik_uid: null
-            })
-                .then(() => {
-                    console.log("pemilik_uid berhasil dihapus");
-                    // Mengupdate tampilan setelah pemilik_uid dihapus
-                    tampilkanDataPerPemilik(); // Panggil lagi untuk memperbarui tampilan
-                    window.location.href = "index.html"
-                })
-                .catch((error) => {
-                    console.error("Terjadi kesalahan saat menghapus pemilik_uid:", error);
-                });
-        }
-
-        // **Saat halaman dimuat, ambil UID dari localStorage dan tampilkan data**
-        document.addEventListener("DOMContentLoaded", () => {
-            const savedUid = localStorage.getItem("pemilik_uid");
-            if (savedUid) {
-                tampilkanDataPerPemilik(savedUid);
-            }
+        }, (error) => {
+            console.error("Terjadi kesalahan saat mengambil data:", error);
         });
+
+
+    }
+
+    // Fungsi untuk menambahkan event listener ke elemen yang dibuat secara dinamis
+    function tambahkanEventListener() {
+        document.querySelectorAll(".lampu-toggle").forEach(switchLampu => {
+            switchLampu.addEventListener("change", function () {
+                const db = getDatabase();
+                const perangkatId = this.getAttribute("data-id");
+                const statusLampu = this.checked ? 1 : 0;
+                const lampuRef = ref(db, `perangkat/${perangkatId}/lampu_status`);
+
+                set(lampuRef, statusLampu)
+                    .then(() => {
+                        console.log(`💡 [${perangkatId}] Lampu status diperbarui: ${statusLampu}`);
+                        document.getElementById(`lampuLabel-${perangkatId}`).textContent = statusLampu === 1 ? "Menyala" : "Mati";
+                    })
+                    .catch(error => console.error(`❌ [${perangkatId}] Gagal memperbarui lampu_status:`, error));
+            });
+        });
+
+        document.querySelectorAll(".mode-toggle").forEach(button => {
+            button.addEventListener("click", function () {
+                const db = getDatabase();
+                const perangkatId = this.getAttribute("data-id");
+                let modeSekarang = this.getAttribute("data-mode");
+                let modeBaru = modeSekarang === "otomatis" ? "manual" : "otomatis";
+                const modeRef = ref(db, `perangkat/${perangkatId}/mode_kontrol`);
+
+                set(modeRef, modeBaru)
+                    .then(() => {
+                        console.log(`🔄 [${perangkatId}] Mode kontrol diperbarui: ${modeBaru}`);
+                        document.getElementById(`modeLabel-${perangkatId}`).textContent = modeBaru.charAt(0).toUpperCase() + modeBaru.slice(1);
+                        this.setAttribute("data-mode", modeBaru);
+
+                        // Sembunyikan atau tampilkan switch lampu
+                        const lampuContainer = document.getElementById(`lampuContainer-${perangkatId}`);
+                        if (lampuContainer) {
+                            lampuContainer.style.display = (modeBaru === "otomatis") ? "none" : "block";
+                        }
+                    })
+                    .catch(error => console.error(`❌ [${perangkatId}] Gagal memperbarui mode_kontrol:`, error));
+            });
+        });
+
+    }
+
+
+    // Fungsi untuk menghapus pemilik_uid dari data perangkat berdasarkan ID
+    function hapusPemilikUID(perangkatId) {
+        const db = getDatabase();
+        const perangkatRef = ref(db, `perangkat/${perangkatId}`);
+
+        // Menghapus hanya field pemilik_uid
+        update(perangkatRef, {
+            pemilik_uid: null
+        })
+            .then(() => {
+                console.log("pemilik_uid berhasil dihapus");
+
+                window.location.href = "index.html"
+            })
+            .catch((error) => {
+                console.error("Terjadi kesalahan saat menghapus pemilik_uid:", error);
+            });
+    }
+
+    // **Saat halaman dimuat, ambil UID dari localStorage dan tampilkan data**
+    document.addEventListener("DOMContentLoaded", () => {
+        const savedUid = localStorage.getItem("pemilik_uid");
+        if (savedUid) {
+            tampilkanDataPerPemilik(savedUid);
+        }
+    });
 
 
     </script>
