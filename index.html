@@ -28,7 +28,6 @@
     <link href="css/sb-admin-2.min.css" rel="stylesheet">
     <link rel="stylesheet" href="css/mycss.css">
     
-
 </head>
 
 <body id="page-top">
@@ -344,7 +343,7 @@
                                 <div class="modal-content">
                                     <div class="modal-header">
                                         <h5 class="modal-title" id="infoModalLabel">Panduan Koneksi WiFi Smartlink</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">x</button>
                                     </div>
                                     <div class="modal-body">
                                         <p class="text-center fw-bold">Hubungkan terlebih dahulu perangkat Smartlink anda ke WiFi sekitar</p>
@@ -483,12 +482,16 @@
 
                         <!-- disini akan mucnul perangkat yang sudah ditambahkan -->
 
-                        
+                        <!-- /.container-fluid -->
+                        <div id="loading-spinner" class="loading-container">
+                            <div class="loading-spinner"></div>
+                        </div>
 
                     </div>
 
                 </div>
-                <!-- /.container-fluid -->
+                
+
 
             </div>
             <!-- End of Main Content -->
@@ -534,11 +537,7 @@
         </div>
     </div>
 
-    <div id="loading" class="d-none">
-        <div class="spinner-border" role="status">
-            <span class="visually-hidden">Loading...</span>
-        </div>
-    </div>
+    
 
 
     <!-- Bootstrap core JavaScript-->
@@ -672,7 +671,7 @@
 
                     scanner.decodeFromVideoDevice(cameraSelect.value, videoElement, async (result, err) => {
                         if (result) {
-                            resultText.textContent = "Hasil: " + result.text;
+                            
                             await stopCamera();
 
                             const scannedBarcode = result.text.trim(); // Hasil scan
@@ -703,13 +702,31 @@
                                 perangkatSnap.forEach((doc) => {
                                     const data = doc.data();
 
-                                    // **Cek apakah produk_id yang discan ada dalam database**
                                     if (produkID in data) {
                                         barcodeTerdaftar = true;
+                                        
                                     }
                                 });
 
-                                if (barcodeTerdaftar) {
+                                
+                                const pemilikRef = ref(dbRealTime, `perangkat/${produkID}/pemilik_uid`);
+
+                                // **Cek pemilik_uid di Realtime Database**
+                                const pemilikSnap = await get(pemilikRef);
+                                let pemilikUID = pemilikSnap.exists() ? pemilikSnap.val() : null;
+
+                                if (pemilikUID) {
+                                    Swal.fire({
+                                        icon: "warning",
+                                        title: "Perangkat Sudah Digunakan",
+                                        text: "Perangkat ini sudah terdaftar oleh pengguna lain.",
+                                        confirmButtonText: "OK"
+                                    });
+                                    return;
+                                }
+
+                                if (barcodeTerdaftar) {                    
+
                                     console.log("Perangkat terdaftar:", scannedBarcode);
 
                                     // Simpan produk_key ke localStorage sebelum OTP dikirim
@@ -1111,17 +1128,19 @@
                 }
             }
 
+    
 
     // Fungsi untuk menampilkan data perangkat berdasarkan pemilik_uid
     function tampilkanDataPerPemilik(uid) {
         const db = getDatabase();
         const perangkatRef = ref(db, "perangkat");
-
+        const container = document.getElementById("perangkatContainer");
+        
         onValue(perangkatRef, (snapshot) => {
             hideLoading();
             if (snapshot.exists()) {
-                const container = document.getElementById("perangkatContainer");
                 container.innerHTML = ""; // Kosongkan container sebelum menampilkan data baru
+                
 
                 let perangkatAda = false;
                 snapshot.forEach(childSnapshot => {
@@ -1225,8 +1244,6 @@
         }, (error) => {
             console.error("Terjadi kesalahan saat mengambil data:", error);
         });
-
-
     }
 
     // Fungsi untuk menambahkan event listener ke elemen yang dibuat secara dinamis
@@ -1303,7 +1320,6 @@
         loadingSpinner.style.display = "none";
     }
 
-
     // **Saat halaman dimuat, ambil UID dari localStorage dan tampilkan data**
     document.addEventListener("DOMContentLoaded", () => {
         showLoading();
@@ -1311,7 +1327,8 @@
         if (savedUid) {
             tampilkanDataPerPemilik(savedUid);
         } else {
-           hideLoading();
+            hideLoading(); // Sembunyikan loading jika tidak ada UID tersimpan
+
         }
     });
 
