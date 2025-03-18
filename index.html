@@ -1118,6 +1118,7 @@
         const perangkatRef = ref(db, "perangkat");
 
         onValue(perangkatRef, (snapshot) => {
+            hideLoading();
             if (snapshot.exists()) {
                 const container = document.getElementById("perangkatContainer");
                 container.innerHTML = ""; // Kosongkan container sebelum menampilkan data baru
@@ -1292,11 +1293,25 @@
             });
     }
 
+    function showLoading() {
+        const loadingSpinner = document.getElementById("loading-spinner");
+        loadingSpinner.style.display = "block";
+    }
+
+    function hideLoading() {
+        const loadingSpinner = document.getElementById("loading-spinner");
+        loadingSpinner.style.display = "none";
+    }
+
+
     // **Saat halaman dimuat, ambil UID dari localStorage dan tampilkan data**
     document.addEventListener("DOMContentLoaded", () => {
+        showLoading();
         const savedUid = localStorage.getItem("pemilik_uid");
         if (savedUid) {
             tampilkanDataPerPemilik(savedUid);
+        } else {
+           hideLoading();
         }
     });
 
